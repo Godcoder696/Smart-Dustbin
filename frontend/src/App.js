@@ -1,9 +1,10 @@
 import './App.css';
+import RoutesHandler from './RoutesHandler';
 
 function App() {
   return (
     <div className="App">
-      <span className=''>Hello world</span>
+      <RoutesHandler></RoutesHandler>
     </div>
   );
 }
