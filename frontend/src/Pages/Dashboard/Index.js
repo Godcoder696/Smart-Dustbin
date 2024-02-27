@@ -1,23 +1,18 @@
 import React from 'react'
-import { MdRefresh } from "react-icons/md";
+
+import SearchBox from './Components/SearchBox';
+import ResultBox from './Components/ResultBox';
+import ResultControls from './Components/ResultControls';
 
 function Index() {
   return (
     <>
-      <div className='flex flex-col items-center h-full w-full bg-red-400'>
-        <span className='w-5/6 text-left font-semibold text-5xl'>
-          Smart Waste Management
-        </span>
-
-        <nav className='mt-16 w-5/6 flex justify-around items-center'>
-          <span>
-            <MdRefresh size={"30px"}/>
-          </span>
-          <div className='w-3/5 border-white border-2 h-12'>
-            
-          </div>
-          <span>All</span>
-        </nav>
+      <div className='flex-col h-full w-full'>
+        <h1 className='text-3xl font-semibold'>SMART WASTE MANAGEMENT</h1>
+        <h3 className='mt-10 text-xl font-semibold'>Dashboard</h3>
+        <SearchBox/>
+        <ResultControls/>
+        <ResultBox/>
       </div>
     </>
   )
