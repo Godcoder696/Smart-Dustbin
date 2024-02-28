@@ -1,8 +1,10 @@
 .App{
     background-color: #EEEEEE;
-    height: 100vh;
+    height: 100%;
     width: 100%;
     color: black;
-    position: fixed;
     padding: 1.5vw;
+}
+::-webkit-scrollbar{
+    display: none;
 }

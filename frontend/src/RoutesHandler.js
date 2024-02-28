@@ -2,8 +2,8 @@ import React from 'react'
 import {Switch,Route} from 'react-router-dom'
 import LoginSign from "./Pages/LoginSignUp/LoginSign"
 import Index from './Pages/Dashboard/Index'
-import Card from './Pages/Dashboard/Card'
 import Error from './Pages/Error/Error'
+import Card from './Pages/Card/Card'
 
 function RoutesHandler() {
   return (
