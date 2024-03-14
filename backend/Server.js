@@ -2,7 +2,6 @@ const express = require("express");
 const dotenv= require("dotenv");
 const cors= require("cors");
 const RoutesHandler= require("./routes/RoutesHandler")
-const ConnectDB= require("./DB/ConnectDB");
 const app= express();
 
 // initializing dotenv
@@ -21,9 +20,6 @@ const port= process.env.PORT;
 app.listen(port,()=>{
     console.log(`Listening to port ${port}`);
 })
-
-// Connecting to DynamoDB
-ConnectDB()
 
 // manage Routes
 app.use("/",RoutesHandler)

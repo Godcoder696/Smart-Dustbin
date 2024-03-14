@@ -1,6 +1,6 @@
 import React from 'react'
 
-function ResultCard() {
+function ResultCard(params) {
   return (
     <>
       <a href="/card:1">
@@ -8,7 +8,7 @@ function ResultCard() {
 
           <div className='flex-col'>
 
-            <h2 className='text-2xl font-semibold'>Dustbin 1</h2>
+            <h2 className='text-2xl font-semibold'>{params.data.Dustbin_Id}</h2>
             
             <div className='text-xl self-end mt-2 flex items-center'>
 
@@ -21,7 +21,7 @@ function ResultCard() {
           </div>
 
           <h2 className='self-end text-gray-500'>
-            Pincode: 122017 | lat: 32.33 long: 35.44
+            Pincode: {params.data.pincode} | lat: {params.data.latitude} long: {params.data.longitude}
           </h2>
 
         </div>
