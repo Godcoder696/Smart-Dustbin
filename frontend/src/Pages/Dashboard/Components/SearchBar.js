@@ -11,7 +11,9 @@ function SearchBar() {
 
             <IoSearchOutline size={30}/>
 
-            <h5 className='text-lg font-semibold'>SEARCH</h5>
+            <h5 className='text-lg font-semibold'>
+              SEARCH
+            </h5>
 
         </button>
     </div>

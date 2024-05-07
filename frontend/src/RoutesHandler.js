@@ -4,6 +4,7 @@ import LoginSign from "./Pages/LoginSignUp/LoginSign"
 import Index from './Pages/Dashboard/Index'
 import Error from './Pages/Error/Error'
 import Card from './Pages/Card/Card'
+import RouteDashboard from './Pages/Dashboard/Pages/RouteDashboard'
 
 function RoutesHandler() {
   return (
@@ -17,6 +18,9 @@ function RoutesHandler() {
         </Route>
         <Route path="/card:id" exact>
           <Card/>
+        </Route>
+        <Route path="/routedashboard">
+          <RouteDashboard></RouteDashboard>
         </Route>
         <Route path="*" exact>
           <Error/>

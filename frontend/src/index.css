@@ -6,3 +6,8 @@
 .bgColor{
     background-color: #E7E7E7;
 }
+
+.maps-canvas{
+    height: 100vh;
+    width: 70vw;
+}
