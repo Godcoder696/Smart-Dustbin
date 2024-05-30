@@ -1,32 +1,88 @@
-import React, { useEffect, useState } from 'react'
-import {useJsApiLoader, GoogleMap, Marker, Autocomplet} from '@react-google-maps/api';
-import Loader from '../Components/Loader';
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
+import React, { useEffect, useState } from 'react';
+import {
+  RequestType,
+  geocode,
+  setDefaults
+} from "react-geocode";
 import { FaLocationDot } from "react-icons/fa6";
+import { ContextState } from '../../../Context/ContextProvider';
+import Loader from '../Components/Loader';
 
 
 function RouteDashboard() {
   const [crntLat,setCrntLat]= useState(0);
   const [crntLng,setCrntLng]= useState(0);
+  const [address,setAddress]= useState("");
+  const [loading, setLoading]= useState(true);
+
+  let {data}= ContextState();
+
+  setDefaults({
+    key: "AIzaSyBqUiK-pdOlYC_2IORnM9-hjPP8ZBEpmXo", 
+    language: "en",
+    region: "es"
+  })
 
   useEffect(()=>{
-    navigator.geolocation.getCurrentPosition((position)=>{
-      setCrntLat(position.coords.latitude);
-      setCrntLng(position.coords.longitude);
-    })
+    console.log("dsutbins:",data);
+    getCrntAddress();
+    getAddress();
+    console.log(address);
   },[])
+  
+  const getCrntAddress= async ()=>{
+    try {
+      navigator.geolocation.getCurrentPosition((position)=>{
+        setCrntLat(position.coords.latitude);
+        setCrntLng(position.coords.longitude);
+      })
+
+      console.log(crntLat, crntLng);
+  
+      let {results} = await geocode(RequestType.LATLNG, `${crntLat},${crntLng}`);
+      const address = results[0].formatted_address;
+      setAddress(address);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(()=>{
+    setAddress(address);
+  },[address])
+
+  const getAddress= async ()=> {
+    setLoading(true);
+    if(data[0].address===undefined){
+      for(let i=0;i<data.length;i++){
+        try {
+          let {results}= await geocode(RequestType.LATLNG, `${data[i].latitude},${data[i].longitude}`);
+          let placeAdress= results[0].formatted_address;
+          console.log(results[0].formatted_address);
+          data[i]["address"]= placeAdress;
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+    setLoading(false);
+  }
 
   const center={
-    lat: 28.5036265,
-    lng: 77.0472801
+    lat: crntLat,
+    lng: crntLng
   }
   
   const {isLoaded}= useJsApiLoader({
     googleMapsApiKey: "AIzaSyBqUiK-pdOlYC_2IORnM9-hjPP8ZBEpmXo",
-    // libraries: ['places']
   })
 
   return (
-    <div className='flex justify-evenly items-center'>
+    loading?
+    <Loader></Loader>
+    :
+      <div className='flex justify-evenly items-center'>
       <div className='h-screen w-3/5 bg-gray-300 rounded-md border-[#50505077] border-2'>
         {
           !isLoaded?
@@ -58,7 +114,9 @@ function RouteDashboard() {
           <div className=' flex items-center'>
             <FaLocationDot size={35}/>
             <div className='ml-3 overflow-hidden text-sm font-thin border-2 border-[#50505077] p-2 rounded-md w-full'>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque adipisci aut, ab consequatur illo consequuntur!
+              {
+                address
+              }
             </div>
           </div>
           <div className='flex items-center'>
@@ -72,31 +130,37 @@ function RouteDashboard() {
           </div>
         </div>
         <div className='
-          mt-3 h-5/6 bg-gray-200 overflow-y-scroll border-[#50505077] border-2
-          flex flex-col
-          p-3
-        '>
-          <div className=' bg-[#d8d8d8] rounded-sm flex flex-col hover:bg-[#c7c7c7] cursor-pointer p-4 justify-between mt-2'>
-            <div className='font-bold text-xl'>
-              Dustbin Name
-            </div>
-            <div className='flex items-center mt-3'>
-              <FaLocationDot size={25}/>
-              <div className='ml-3 overflow-hidden text-xs'>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque adipisci aut, ab consequatur illo consequuntur!
+        mt-3 h-5/6 bg-gray-200 overflow-y-scroll border-[#50505077] border-2
+        flex flex-col
+        p-3
+      '>
+        {
+          data.map((dustbin,key)=>{
+            return (
+            <div className=' bg-[#d8d8d8] rounded-sm flex flex-col hover:bg-[#c7c7c7] cursor-pointer p-4 justify-between mt-2' key={key}>
+              <div className='font-bold text-xl'>
+                {dustbin.Dustbin_Id}
+              </div>
+              <div className='flex items-center mt-3'>
+                <FaLocationDot size={25}/>
+                <div className='ml-3 overflow-hidden text-xs'>
+                  {
+                    dustbin.address
+                  }
+                </div>
+              </div>
+              <div className=' flex items-center justify-between'>
+                <div className='font-semibold text-sm mt-6 w-full flex justify-between'>
+                  <span>Distance: 8kms</span>
+                  <span>Duration: 1hrs</span>
+                </div>
               </div>
             </div>
-            <div className=' flex items-center justify-between'>
-              <div className='font-semibold text-sm mt-6 w-full flex justify-between'>
-                <span>Distance: 8kms</span>
-                <span>Duration: 1hrs</span>
-              </div>
-            </div>
-          </div>
-          
+            )
+          })
+        }
         </div>
       </div>
-      
     </div>
   )
 }

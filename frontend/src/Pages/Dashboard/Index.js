@@ -8,16 +8,14 @@ import { ContextState } from '../../Context/ContextProvider';
 
 function Index() {
   let [loading,setLoading]= useState(false);
-  let {data,setData}= ContextState();
+  const {data,setData}= ContextState();
 
   const fetchData= async ()=>{
     setLoading(true);
 
     try {
-
-      let result= await axios.get("/data");
-      setData(result.data)
-
+      const result= await axios.get("/data");
+      setData(result.data);
     } catch (error) {
       console.log("Error occurred while fetching results!",error);
     }
@@ -30,7 +28,7 @@ function Index() {
   },[])
 
   useEffect(()=>{
-    setData(data)
+    setData(data);
   },[data])
 
   return (
