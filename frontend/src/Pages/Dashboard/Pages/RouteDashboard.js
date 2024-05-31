@@ -1,88 +1,94 @@
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
+import { DirectionsRenderer, GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import React, { useEffect, useState } from 'react';
-import {
-  RequestType,
-  geocode,
-  setDefaults
-} from "react-geocode";
 import { FaLocationDot } from "react-icons/fa6";
 import { ContextState } from '../../../Context/ContextProvider';
 import Loader from '../Components/Loader';
 
 
 function RouteDashboard() {
-  const [crntLat,setCrntLat]= useState(0);
-  const [crntLng,setCrntLng]= useState(0);
-  const [address,setAddress]= useState("");
-  const [loading, setLoading]= useState(true);
+  let [loading,setLoading]= useState(true);
+  const [directionsResponse,setDirectionsResponse]= useState(null);
+  const [index,setIndex]= useState()
+  // const [map,setMap]= useState(/** @type google.maps.Map */ (null));
 
   let {data}= ContextState();
+  const {crntLocation,setCrntLocation}= ContextState();
+  const {selectedLocation,setSelectedLocation}= ContextState();
+  const {crntLat}= ContextState();
+  const {crntLng}= ContextState();
 
-  setDefaults({
-    key: "AIzaSyBqUiK-pdOlYC_2IORnM9-hjPP8ZBEpmXo", 
-    language: "en",
-    region: "es"
-  })
+  window.onbeforeunload = function() { 
+    window.setTimeout(function () { 
+        window.location = '/dashboard';
+    }, 0); 
+    window.onbeforeunload = null; 
+  }
+  const center={
+    lat: crntLat,
+    lng: crntLng
+  }
+  let calculateRoute= async ()=>{
+    try {
+      // eslint-disable-next-line no-undef
+      const directionsService= new google.maps.DirectionsService();
+      for(let i=0;i<data.length;i++){
+        const result = await directionsService.route({
+          origin: crntLocation,
+          destination: data[i].address,
+          // eslint-disable-next-line no-undef
+          travelMode: google.maps.TravelMode.DRIVING
+        })
+        data[i]["distance"]=result.routes[0].legs[0].distance.text;
+        data[i]["duration"]=result.routes[0].legs[0].duration.text;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
+  }
 
   useEffect(()=>{
-    console.log("dsutbins:",data);
-    getCrntAddress();
-    getAddress();
-    console.log(address);
+    calculateRoute();
   },[])
-  
-  const getCrntAddress= async ()=>{
-    try {
-      navigator.geolocation.getCurrentPosition((position)=>{
-        setCrntLat(position.coords.latitude);
-        setCrntLng(position.coords.longitude);
-      })
 
-      console.log(crntLat, crntLng);
-  
-      let {results} = await geocode(RequestType.LATLNG, `${crntLat},${crntLng}`);
-      const address = results[0].formatted_address;
-      setAddress(address);
+  let getRoute= async()=>{
+    setDirectionsResponse(null);
+    try {
+      // eslint-disable-next-line no-undef
+      const directionsService= new google.maps.DirectionsService();
+      const result = await directionsService.route({
+        origin: crntLocation,
+        destination: selectedLocation,
+        // eslint-disable-next-line no-undef
+        travelMode: google.maps.TravelMode.DRIVING
+      })
+      setDirectionsResponse(result);
     } catch (error) {
       console.log(error);
     }
   }
 
   useEffect(()=>{
-    setAddress(address);
-  },[address])
-
-  const getAddress= async ()=> {
-    setLoading(true);
-    if(data[0].address===undefined){
-      for(let i=0;i<data.length;i++){
-        try {
-          let {results}= await geocode(RequestType.LATLNG, `${data[i].latitude},${data[i].longitude}`);
-          let placeAdress= results[0].formatted_address;
-          console.log(results[0].formatted_address);
-          data[i]["address"]= placeAdress;
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    }
-    setLoading(false);
-  }
-
-  const center={
-    lat: crntLat,
-    lng: crntLng
-  }
+    getRoute();
+  },[selectedLocation])
   
   const {isLoaded}= useJsApiLoader({
     googleMapsApiKey: "AIzaSyBqUiK-pdOlYC_2IORnM9-hjPP8ZBEpmXo",
+    libraries: ['routes']
   })
+
+  let dustbinPicked=()=>{
+    setCrntLocation(selectedLocation);
+    setSelectedLocation("");
+    setDirectionsResponse(null)
+    data.splice(index,1);
+  }
 
   return (
     loading?
     <Loader></Loader>
     :
-      <div className='flex justify-evenly items-center'>
+    <div className='flex justify-evenly items-center'>
       <div className='h-screen w-3/5 bg-gray-300 rounded-md border-[#50505077] border-2'>
         {
           !isLoaded?
@@ -103,6 +109,9 @@ function RouteDashboard() {
             }}
           >
             <Marker position={center}/>
+            {
+              directionsResponse && <DirectionsRenderer directions={directionsResponse}/>
+            }
           </GoogleMap>
         }
       </div>
@@ -115,17 +124,24 @@ function RouteDashboard() {
             <FaLocationDot size={35}/>
             <div className='ml-3 overflow-hidden text-sm font-thin border-2 border-[#50505077] p-2 rounded-md w-full'>
               {
-                address
+                crntLocation
               }
             </div>
           </div>
           <div className='flex items-center'>
             <FaLocationDot size={35}/>
             <div className='ml-3 overflow-hidden text-sm font-thin border-2 border-[#50505077] p-2 rounded-md w-full'>
-              Select a location from below....
+              {
+                selectedLocation===""?
+                "Select a location from below...."
+                :
+                selectedLocation
+              }
             </div>
           </div>
-          <div className='bg-sky-300 text-center py-2 font-bold text-white cursor-pointer hover:bg-sky-500 rounded-md'>
+          <div className='bg-sky-300 text-center py-2 font-bold text-white cursor-pointer hover:bg-sky-500 rounded-md'
+            onClick={()=>{dustbinPicked()}}
+          >
             Dustbin Picked!
           </div>
         </div>
@@ -137,7 +153,12 @@ function RouteDashboard() {
         {
           data.map((dustbin,key)=>{
             return (
-            <div className=' bg-[#d8d8d8] rounded-sm flex flex-col hover:bg-[#c7c7c7] cursor-pointer p-4 justify-between mt-2' key={key}>
+            <div className=' bg-[#d8d8d8] rounded-sm flex flex-col hover:bg-[#c7c7c7] cursor-pointer p-4 justify-between mt-2' key={key} 
+              onClick={()=>{
+                setSelectedLocation(dustbin.address);
+                setIndex(key);
+              }}
+            >
               <div className='font-bold text-xl'>
                 {dustbin.Dustbin_Id}
               </div>
@@ -151,8 +172,8 @@ function RouteDashboard() {
               </div>
               <div className=' flex items-center justify-between'>
                 <div className='font-semibold text-sm mt-6 w-full flex justify-between'>
-                  <span>Distance: 8kms</span>
-                  <span>Duration: 1hrs</span>
+                  <span>Distance: {dustbin.distance}</span>
+                  <span>Duration: {dustbin.duration}</span>
                 </div>
               </div>
             </div>

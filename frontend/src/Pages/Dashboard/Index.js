@@ -5,10 +5,24 @@ import ResultControls from './Components/ResultControls';
 import axios from 'axios';
 import Loader from './Components/Loader';
 import { ContextState } from '../../Context/ContextProvider';
+import { RequestType, geocode, setDefaults } from 'react-geocode';
 
 function Index() {
   let [loading,setLoading]= useState(false);
   const {data,setData}= ContextState();
+  const {crntLat,setCrntLat}= ContextState();
+  const {crntLng, setCrntLng}= ContextState();
+  const {crntLocation,setCrntLocation}= ContextState();
+
+  useEffect(()=>{
+    fetchData();
+    setDefaults({
+      key: "AIzaSyBqUiK-pdOlYC_2IORnM9-hjPP8ZBEpmXo", 
+      language: "en",
+      region: "es"
+    })
+    getLocation();
+  },[])
 
   const fetchData= async ()=>{
     setLoading(true);
@@ -22,14 +36,45 @@ function Index() {
 
     setLoading(false);
   }
-  
-  useEffect(()=>{
-    fetchData();
-  },[])
+
+  let getLocation= async ()=>{
+    await navigator.geolocation.getCurrentPosition((position)=>{
+      setCrntLat(position.coords.latitude);
+      setCrntLng(position.coords.longitude);
+    })
+  }
 
   useEffect(()=>{
     setData(data);
-  },[data])
+    setCrntLat(crntLat);
+    setCrntLng(crntLng);
+    getAddress();
+  },[data,crntLat,crntLng])
+
+  let getAddress= async ()=>{
+    try {
+      let {results} = await geocode(RequestType.LATLNG, `${crntLat},${crntLng}`);
+      const address = results[0].formatted_address;
+      setCrntLocation(address);
+      console.log(crntLocation);
+      getAddresses();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  let getAddresses= async ()=> {
+    for(let i=0;i<data.length;i++){
+      try {
+        let {results}= await geocode(RequestType.LATLNG, `${data[i].latitude},${data[i].longitude}`);
+        let placeAdress= results[0].formatted_address;
+        console.log(results[0].formatted_address);
+        data[i]["address"]= placeAdress;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
 
   return (
     <>
