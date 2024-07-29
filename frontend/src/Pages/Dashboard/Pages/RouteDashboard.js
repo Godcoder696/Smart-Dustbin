@@ -73,7 +73,7 @@ function RouteDashboard() {
   },[selectedLocation])
   
   const {isLoaded}= useJsApiLoader({
-    googleMapsApiKey: "AIzaSyBqUiK-pdOlYC_2IORnM9-hjPP8ZBEpmXo",
+    googleMapsApiKey: "",
     libraries: ['routes']
   })
 
