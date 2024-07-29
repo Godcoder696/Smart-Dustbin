@@ -17,7 +17,7 @@ function Index() {
   useEffect(()=>{
     fetchData();
     setDefaults({
-      key: "AIzaSyBqUiK-pdOlYC_2IORnM9-hjPP8ZBEpmXo", 
+      key: "", 
       language: "en",
       region: "es"
     })
