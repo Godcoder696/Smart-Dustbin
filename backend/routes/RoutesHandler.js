@@ -39,4 +39,14 @@ router.get("/data",async (req,res)=>{
     })
 })
 
+// route for user login & verification
+router.post("/login",async()=>{
+  try {
+    
+  } catch (error) {
+    
+  }  
+})
+
+
 module.exports= router

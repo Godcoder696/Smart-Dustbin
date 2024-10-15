@@ -19,7 +19,7 @@ function RouteDashboard() {
 
   window.onbeforeunload = function() { 
     window.setTimeout(function () { 
-        window.location = '/dashboard';
+      window.location = '/dashboard';
     }, 0); 
     window.onbeforeunload = null; 
   }
@@ -30,17 +30,17 @@ function RouteDashboard() {
   let calculateRoute= async ()=>{
     try {
       // eslint-disable-next-line no-undef
-      const directionsService= new google.maps.DirectionsService();
-      for(let i=0;i<data.length;i++){
-        const result = await directionsService.route({
-          origin: crntLocation,
-          destination: data[i].address,
-          // eslint-disable-next-line no-undef
-          travelMode: google.maps.TravelMode.DRIVING
-        })
-        data[i]["distance"]=result.routes[0].legs[0].distance.text;
-        data[i]["duration"]=result.routes[0].legs[0].duration.text;
-      }
+      // const directionsService= new google.maps.DirectionsService();
+      // for(let i=0;i<data.length;i++){
+      //   const result = await directionsService.route({
+      //     origin: crntLocation,
+      //     destination: data[i].address,
+      //     // eslint-disable-next-line no-undef
+      //     travelMode: google.maps.TravelMode.DRIVING
+      //   })
+      //   data[i]["distance"]=result.routes[0].legs[0].distance.text;
+      //   data[i]["duration"]=result.routes[0].legs[0].duration.text;
+      // }
     } catch (error) {
       console.log(error);
     }
@@ -55,14 +55,14 @@ function RouteDashboard() {
     setDirectionsResponse(null);
     try {
       // eslint-disable-next-line no-undef
-      const directionsService= new google.maps.DirectionsService();
-      const result = await directionsService.route({
-        origin: crntLocation,
-        destination: selectedLocation,
-        // eslint-disable-next-line no-undef
-        travelMode: google.maps.TravelMode.DRIVING
-      })
-      setDirectionsResponse(result);
+      // const directionsService= new google.maps.DirectionsService();
+      // const result = await directionsService.route({
+      //   origin: crntLocation,
+      //   destination: selectedLocation,
+      //   // eslint-disable-next-line no-undef
+      //   travelMode: google.maps.TravelMode.DRIVING
+      // })
+      // setDirectionsResponse(result);
     } catch (error) {
       console.log(error);
     }
