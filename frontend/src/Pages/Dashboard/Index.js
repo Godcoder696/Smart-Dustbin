@@ -78,7 +78,7 @@ function Index() {
 
   return (
     <>
-      <div className='flex-col h-full w-full'>
+      <div className='flex-col h-full w-full space-y-3'>
         <h1 className='text-3xl font-semibold'>SMART WASTE MANAGEMENT</h1>
         <h3 className='mt-10 text-xl font-semibold'>Dashboard</h3>
         <SearchBox/>

@@ -1,17 +1,15 @@
 import React, { useState } from 'react'
-import {Switch,Route} from 'react-router-dom'
-import LoginSign from "./Pages/LoginSignUp/LoginSign"
-import Index from './Pages/Dashboard/Index'
-import Error from './Pages/Error/Error'
+import { Route, Switch } from 'react-router-dom'
 import Card from './Pages/Card/Card'
+import Index from './Pages/Dashboard/Index'
 import RouteDashboard from './Pages/Dashboard/Pages/RouteDashboard'
-import { useNavigate } from "react-router-dom";
+import Error from './Pages/Error/Error'
+import LoginSign from "./Pages/LoginSignUp/LoginSign"
+import Analysis from './Pages/Analysis/Analysis'
 
 function RoutesHandler() {
   const [login, setLogin]= useState(false);
   
-
-
   return (
     <>
       <Switch >
@@ -19,7 +17,7 @@ function RoutesHandler() {
           <LoginSign login={login} setLogin={setLogin}/>
         </Route>
         {
-          // login &&
+          login &&
           <>
             <Route path="/dashboard" exact>
               <Index login={login}/>
@@ -29,6 +27,9 @@ function RoutesHandler() {
             </Route>
             <Route path="/routedashboard">
               <RouteDashboard login={login}></RouteDashboard>
+            </Route>
+            <Route path="/dashboard/analysis">
+              <Analysis login={login}></Analysis>
             </Route>
           </>
         }

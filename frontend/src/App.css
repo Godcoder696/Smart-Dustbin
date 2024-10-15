@@ -1,7 +1,6 @@
 .App{
     background-color: #EEEEEE;
     color: black;
-    padding: 1.5vw;
 }
 ::-webkit-scrollbar{
     display: none;

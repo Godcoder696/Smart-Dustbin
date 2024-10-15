@@ -4,13 +4,16 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 function LoginSign({login, setLogin}) {
   const [mail, setMail]= useState("admin@swss.com");
   const [password, setPassword]= useState("admin@123");
+  const [wrngLogin, setWrngLogin]= useState(false);
   const history = useHistory();
 
   const validate= ()=>{
     if(mail==="admin@swss.com" && password==="admin@123"){
       setLogin(true);
+      setWrngLogin(false);
       history.push("/dashboard")
     }
+    else setWrngLogin(true);
   }
 
   return (
@@ -23,11 +26,11 @@ function LoginSign({login, setLogin}) {
         </div>
 
         <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <div class="space-y-6" >
+          <div class="space-y-3" >
             <div>
               <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
               <div class="mt-2">
-                <input id="email" name="email" type="email" autocomplete="email" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                <input id="email" name="email" type="email" autocomplete="email" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-4"
                 onChange={(e)=>{setMail(e.target.value)}}
                 value={mail}
                 />
@@ -39,13 +42,15 @@ function LoginSign({login, setLogin}) {
                 <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
               </div>
               <div class="mt-2">
-                <input id="password" name="password" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                <input id="password" name="password" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-4"
                 onChange={(e)=>{setPassword(e.target.value)}}
                 value={password}
                 />
               </div>
             </div>
-
+            {wrngLogin && <div className='text-sm text-red-500 text-center'>
+              **Invalid user details**
+            </div>}
             <div>
               <button 
                 type="submit" 
